@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 import json
+import pandas as pd
 
 class optionsChain:
     def __init__(self, underlyingSymbol='AAPL', strikeFrom=100, strikeTo=100):
@@ -23,8 +24,15 @@ class optionsChain:
                             'Authorization': f'Bearer {self.token}'
                         }
         self.chain = requests.request("GET", self.url, headers=self.headers)
-        self.optionsChain = json.loads(self.chain.text)
+        self.optionsChain = pd.DataFrame(json.loads(self.chain.text))
 
     def get_access_token(self):
         with open('md.token', 'r') as file:
             self.token = file.read()
+
+def main():
+    chain = optionsChain()
+    print(chain.optionsChain.head())
+
+if __name__ == '__main__':
+    main()
